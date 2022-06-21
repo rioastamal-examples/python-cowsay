@@ -2,6 +2,7 @@ version: 0.2
 
 phases:
   install:
+    on-failure: ABORT
     commands:
       - echo "Downloading AWS Lightsail Control Plugin..."
       - curl "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o "/usr/local/bin/lightsailctl"
@@ -14,6 +15,7 @@ phases:
       - env
       
   build:
+    on-failure: ABORT
     commands:
       - APP_VERSION=$( echo $CODEBUILD_WEBHOOK_HEAD_REF | cut -d '/' -f 3 )
       - echo "Building the Docker image for Python Cowsay version ${APP_VERSION}..."
@@ -21,6 +23,7 @@ phases:
       - docker images $IMAGE_NAME:$APP_VERSION
   
   post_build:
+    on-failure: ABORT
     commands:
       - APP_VERSION=$( echo $CODEBUILD_WEBHOOK_HEAD_REF | cut -d '/' -f 3 )
       - echo "Pushing image to Lightsail container service..."
