@@ -58,14 +58,15 @@ phases:
         cat <<EOF > /tmp/lightsail-endpoint.json
         {
           "containerName": "cowsay-api",
-          "containerPort": 80
+          "containerPort": 8080
         }
         EOF
         
-        # Deploy container
+        # Let's see if the files was created
         ls -l /tmp/*.json
         
       - |
+        # Deploy container
         aws lightsail create-container-service-deployment \
           --service-name $LIGHTSAIL_SERVICE_NAME \
           --containers file:///tmp/lightsail-containers.json \
