@@ -43,7 +43,7 @@ phases:
         cat <<EOF > /tmp/lightsail-containers.json
         {
         "cowsay-api": {
-          "image": ":${LIGHTSAIL_SERVICE_NAME}.img-python-cowsay.latest",
+          "image": ":${LIGHTSAIL_SERVICE_NAME}.${IMAGE_NAME}.latest",
             "environment": {
               "APP_WORKER": "4",
               "APP_BIND": "0.0.0.0:8080"
