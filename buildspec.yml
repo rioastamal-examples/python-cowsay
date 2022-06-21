@@ -31,11 +31,13 @@ phases:
     on-failure: ABORT
     commands:
       - |
-        APP_VERSION=$( echo $CODEBUILD_WEBHOOK_HEAD_REF | cut -d '/' -f 3 )
+        export APP_VERSION=$( echo $CODEBUILD_WEBHOOK_HEAD_REF | cut -d '/' -f 3 )
         # Default to main branch (development)
         [ -z "$APP_VERSION" ] && APP_VERSION="main"
+        echo "Deploying version '${APP_VERSION}'..."
         
-        echo "Pushing image to Lightsail container service..."
+      - |
+        echo "Pushing image to Lightsail container service '${APP_VERSION}'..."
         aws lightsail push-container-image --region $AWS_REGION --service-name $LIGHTSAIL_SERVICE_NAME --label $IMAGE_NAME --image $IMAGE_NAME:$APP_VERSION
         
         cat <<EOF > /tmp/lightsail-containers.json
@@ -61,6 +63,7 @@ phases:
         EOF
         
         # Deploy container
+        ls -l /tmp/*.json
         aws lightsail create-container-service-deployment \
           --service-name $LIGHTSAIL_SERVICE_NAME \
           --containers file:///tmp/lightsail-containers.json \
