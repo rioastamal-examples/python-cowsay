@@ -15,5 +15,14 @@ phases:
       
   build:
     commands:
-      - echo Build started on `date`
-      - echo Building the Docker image for Python Cowsay...
+      - APP_VERSION=$( echo $CODEBUILD_WEBHOOK_HEAD_REF | cut -d '/' -f 3 )
+      - echo "Building the Docker image for Python Cowsay version ${APP_VERSION}..."
+      - docker build -t $IMAGE_NAME:$APP_VERSION .
+      - docker images $IMAGE_NAME:$APP_VERSION
+  
+  post_build:
+    commands:
+      - APP_VERSION=$( echo $CODEBUILD_WEBHOOK_HEAD_REF | cut -d '/' -f 3 )
+      - echo "Pushing image to Lightsail container service..."
+      - aws lightsail push-container-image --region $AWS_REGION --service-name $LIGHTSAIL_SERVICE_NAME --label $IMAGE_NAME --image $IMAGE_NAME:$APP_VERSION || echo "FAILS"
+      
