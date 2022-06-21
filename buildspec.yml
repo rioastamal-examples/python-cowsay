@@ -36,5 +36,32 @@ phases:
         [ -z "$APP_VERSION" ] && APP_VERSION="main"
         
         echo "Pushing image to Lightsail container service..."
-        aws lightsail push-container-image --region $AWS_REGION --service-name $LIGHTSAIL_SERVICE_NAME --label $IMAGE_NAME --image $IMAGE_NAME:$APP_VERSION || echo "FAILS"
-      
+        aws lightsail push-container-image --region $AWS_REGION --service-name $LIGHTSAIL_SERVICE_NAME --label $IMAGE_NAME --image $IMAGE_NAME:$APP_VERSION
+        
+        cat <<EOF > /tmp/lightsail-containers.json
+        {
+        "cowsay-api": {
+          "image": ":${LIGHTSAIL_SERVICE_NAME}.img-python-cowsay.latest",
+            "environment": {
+              "APP_WORKER": "4",
+              "APP_BIND": "0.0.0.0:8080"
+            },
+            "ports": {
+              "8080": "HTTP"
+            }
+          }
+        }
+        EOF
+        
+        cat <<EOF > /tmp/lightsail-endpoint.json
+        {
+          "containerName": "cowsay-api",
+          "containerPort": 80
+        }
+        EOF
+        
+        # Deploy container
+        aws lightsail create-container-service-deployment \
+          --service-name $LIGHTSAIL_SERVICE_NAME \
+          --containers file:///tmp/lightsail-containers.json \
+          --public-endpoint file:///tmp/lightsail-endpoint.json
