@@ -64,6 +64,8 @@ phases:
         
         # Deploy container
         ls -l /tmp/*.json
+        
+      - |
         aws lightsail create-container-service-deployment \
           --service-name $LIGHTSAIL_SERVICE_NAME \
           --containers file:///tmp/lightsail-containers.json \
