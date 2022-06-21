@@ -8,6 +8,11 @@ phases:
       - chmod +x /usr/local/bin/lightsailctl
       - echo "Lightsail plugin successfully installed."
       
+  pre_build:
+    commands:
+      - echo "Showing env..."
+      - env
+      
   build:
     commands:
       - echo Build started on `date`
