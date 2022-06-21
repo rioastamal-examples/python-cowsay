@@ -4,7 +4,17 @@ A small Python Flask app to display text using cowsay library.
 
 ## How to Run
 
-Make sure you've Docker installed on your machine. Run pip command using Docker to install all dependencies.
+Make sure you've Docker installed on your machine. Clone or download this repository.
+
+```sh
+git clone https://github.com/rioastamal-examples/python-cowsay.git
+```
+
+```sh
+cd python-cowsay
+```
+
+Run pip command using Docker to install all dependencies.
 
 ```sh
 docker run -v $(pwd):/app --rm -it \
