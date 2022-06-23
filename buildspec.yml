@@ -26,6 +26,13 @@ phases:
         echo "Building the Docker image for Python Cowsay version ${APP_VERSION}..."
         docker build -t $IMAGE_NAME:$APP_VERSION .
         docker images $IMAGE_NAME:$APP_VERSION
+        
+      - |
+        echo "Running unit test..."
+        docker run -v $(pwd):/app --rm -it \
+          -w /app -e PYTHONPATH=/app/libs.dev \
+          public.ecr.aws/docker/library/python:3.8-slim \
+          /app/libs.dev/bin/pytest -v
   
   post_build:
     on-failure: ABORT
