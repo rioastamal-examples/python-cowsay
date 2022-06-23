@@ -85,6 +85,38 @@ My Local IP: 172.26.44.245
 
 Available characters: 'beavis', 'cheese', 'daemon', 'cow', 'dragon', 'ghostbusters', 'kitty', 'meow', 'milk', 'pig', 'stegosaurus', 'stimpy', 'trex', 'turkey', 'turtle', 'tux'.
 
+## Running Test
+
+Install development package first.
+
+```sh
+docker run -v $(pwd):/app --rm -it \
+public.ecr.aws/docker/library/python:3.8-slim \
+pip install -r /app/requirements.dev.txt --target=/app/libs.dev 
+```
+
+To run unit test issue following command.
+
+```sh
+docker run -v $(pwd):/app --rm -it \
+-w /app -e PYTHONPATH=/app/libs.dev \
+public.ecr.aws/docker/library/python:3.8-slim \
+/app/libs.dev/bin/pytest -v
+```
+
+```
+================================================= test session starts =================================================
+platform linux -- Python 3.8.13, pytest-7.1.2, pluggy-1.0.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /app
+collected 2 items                                                                                                     
+
+tests/test_cowsay.py::test_root_path PASSED                                                                     [ 50%]
+tests/test_cowsay.py::test_text_param PASSED                                                                    [100%]
+
+================================================== 2 passed in 0.56s ==================================================
+```
+
 ## License
 
 This project is licensed under MIT License.
