@@ -28,8 +28,15 @@ phases:
         docker images $IMAGE_NAME:$APP_VERSION
         
       - |
+        echo "Installing dev dependencies..."
+        ls $(pwd)
+        
+        docker run -v $(pwd):/app --rm \
+          public.ecr.aws/docker/library/python:3.8-slim \
+          pip install -r /app/requirements.dev.txt --target=/app/libs.dev 
+        
         echo "Running unit test..."
-        docker run -v $(pwd):/app --rm -it \
+        docker run -v $(pwd):/app --rm \
           -w /app -e PYTHONPATH=/app/libs.dev \
           public.ecr.aws/docker/library/python:3.8-slim \
           /app/libs.dev/bin/pytest -v
